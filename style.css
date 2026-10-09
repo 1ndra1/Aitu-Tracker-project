@@ -1,0 +1,324 @@
+/* ---------- цвета (светлая и тёмная тема) ---------- */
+:root {
+  --bg: #f4f7f9;
+  --card: #ffffff;
+  --main: #002147;
+  --accent: #00a8cc;
+  --text: #1a202c;
+  --gray: #718096;
+  --border: #d9e0e8;
+  --red: #ef4444;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --main: #00a8cc;
+  --accent: #38bdf8;
+  --text: #f8fafc;
+  --gray: #94a3b8;
+  --border: #334155;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+}
+
+button { cursor: pointer; font-family: inherit; border: none; }
+
+/* ---------- шапка ---------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--card);
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+/* логотип: в светлой теме - светлая версия, в тёмной - тёмная */
+.logo { height: 48px; width: auto; max-width: 100%; }
+.logo-dark { display: none; }
+:root[data-theme="dark"] .logo-light { display: none; }
+:root[data-theme="dark"] .logo-dark { display: block; }
+
+/* заголовок h1 нужен для доступности, но на экране не виден (название уже в логотипе) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+#authContainer { display: flex; align-items: center; gap: 8px; }
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-outline:hover { background: var(--bg); }
+
+/* кнопка смены темы: просто иконка */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-toggle:hover { background: var(--bg); }
+.theme-toggle svg { width: 20px; height: 20px; }
+
+/* показываем нужную иконку: в светлой теме - солнце, в тёмной - луна */
+.icon-moon { display: none; }
+:root[data-theme="dark"] .icon-sun { display: none; }
+:root[data-theme="dark"] .icon-moon { display: block; }
+
+/* ---------- вкладки ---------- */
+.tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 6px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  background: transparent;
+  color: var(--gray);
+}
+.tab-btn.active { background: var(--main); color: #fff; }
+:root[data-theme="dark"] .tab-btn.active { color: #0f172a; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.panel h2 { font-size: 1.25rem; margin-bottom: 14px; color: var(--main); }
+
+/* ---------- поля ввода (обычные) ---------- */
+input[type="date"], input[type="time"], input[type="text"], select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+}
+input:focus, select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+/* ---------- задачи ---------- */
+.date-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.date-center { text-align: center; }
+#dateLabel { font-size: 0.85rem; color: var(--gray); margin-top: 4px; }
+
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.task-item.completed { opacity: 0.55; }
+.task-item.completed .task-title { text-decoration: line-through; }
+
+.task-checkbox { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); }
+.task-content { flex: 1; }
+.task-title { font-weight: bold; }
+.task-meta { font-size: 0.8rem; color: var(--gray); display: flex; gap: 8px; flex-wrap: wrap; }
+.task-subject { color: var(--accent); font-weight: bold; }
+
+.task-delete, .class-delete {
+  background: none;
+  color: var(--gray);
+  font-size: 1.3rem;
+}
+.task-delete:hover, .class-delete:hover { color: var(--red); }
+
+.empty-state { text-align: center; color: var(--gray); padding: 16px 0; }
+
+.task-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- расписание ---------- */
+.schedule-form-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+.schedule-form-card h3 { font-size: 1rem; margin-bottom: 10px; }
+.schedule-form { display: grid; grid-template-columns: 1fr; gap: 8px; }
+
+@media (min-width: 600px) {
+  .task-form { grid-template-columns: 2fr 1.5fr 100px auto; }
+  .schedule-form { grid-template-columns: 1.2fr 1.5fr 1.2fr 1.1fr auto; }
+}
+
+.schedule-grid { display: flex; flex-direction: column; gap: 10px; }
+.day-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.day-header {
+  background: var(--bg);
+  padding: 8px 14px;
+  font-weight: bold;
+  color: var(--main);
+  border-bottom: 1px solid var(--border);
+}
+.day-body { padding: 10px 14px; }
+.class-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.class-item:last-child { border-bottom: none; }
+.class-time { font-weight: bold; color: var(--gray); font-size: 0.85rem; min-width: 95px; }
+.class-name { flex: 1; font-weight: bold; }
+.class-room { font-size: 0.85rem; color: var(--accent); }
+.day-off { color: var(--gray); font-style: italic; }
+
+/* ---------- статистика ---------- */
+.stats-container { text-align: center; }
+.stats-number { font-size: 2.6rem; font-weight: bold; color: var(--accent); }
+.stats-label { font-size: 0.9rem; color: var(--gray); margin-bottom: 10px; text-transform: uppercase; }
+.stats-text { margin-bottom: 16px; }
+.progress-wrap {
+  background: var(--bg);
+  height: 18px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.4s; }
+.chart-wrapper { position: relative; width: 100%; height: 260px; margin: 16px auto; }
+
+/* ---------- окно входа / регистрации ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: var(--card);
+  width: 100%;
+  max-width: 400px;
+  border-radius: 14px;
+  padding: 24px;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-header h3 { font-size: 1.3rem; }
+.btn-close { background: none; font-size: 1.6rem; color: var(--gray); }
+
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; }
+
+/* красивое поле: иконка слева + рамка которая подсвечивается */
+.input-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 168, 204, 0.18);
+}
+.input-box.error { border-color: var(--red); }
+.input-box svg { width: 18px; height: 18px; color: var(--gray); flex-shrink: 0; }
+.input-box:focus-within svg { color: var(--accent); }
+
+/* внутри красивого поля убираем обычную рамку */
+.input-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 12px 0;
+  outline: none;
+  min-width: 0;
+}
+.input-box input:focus { outline: none; }
+
+.eye-btn { background: none; color: var(--gray); padding: 4px; display: flex; }
+.eye-btn:hover { color: var(--accent); }
+
+.error-text { color: var(--red); font-size: 0.8rem; margin-top: 4px; min-height: 1em; }
+
+.modal-footer { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.modal-footer .btn { width: 100%; padding: 12px; font-size: 1rem; }
+.modal-switch { text-align: center; font-size: 0.85rem; color: var(--gray); cursor: pointer; }
+.modal-switch:hover { color: var(--accent); }
