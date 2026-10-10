@@ -564,52 +564,18 @@ function escapeHTML(str) {
 }
 
 window.onload = init;
-// Функция для автоматического генерации 100 задач в Firestore (для Part A3)
-function seed100Tasks() {
-  if (!db) {
-    alert("Ошибка: Firestore не инициализирован!");
-    return;
-  }
-  
-  const subjectsList = ["Линейная алгебра", "Математический анализ", "Введение в программирование", "ИКТ", "Иностранный язык", "Культурология", "Физкультура"];
-  const taskTypes = ["Лабораторная работа", "Подготовка к лекции", "Чтение главы", "Решение практических задач", "Проектный отчет", "Сдача домашнего задания"];
 
-  console.log("Начало загрузки 100 задач...");
-
-  for (let i = 1; i <= 100; i++) {
-    const randomSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
-    const randomType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
-    
-    db.collection("tasks").add({
-      title: `${randomType} №${i}`,
-      subject: randomSubject,
-      time: "14:00",
-      date: "2026-10-10",
-      done: i % 3 === 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-  
-  alert("Успешно отправлен запрос на создание 100 задач в Cloud Firestore!");
-}
-
-// Запуск по комбинации клавиш Ctrl + Shift + L (или Cmd + Shift + L на Mac)
-window.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.code === 'KeyL') {
-    seed100Tasks();
-  }
-});
 // Автоматическая генерация 100 задач для Assignment 3 (Part A3)
 function seed100Tasks() {
   if (!db) {
-    alert("Ошибка: Firestore не инициализирован!");
+    console.error("Ошибка: Firestore не инициализирован!");
     return;
   }
   
   const subjectsList = ["Линейная алгебра", "Математический анализ", "Введение в программирование", "ИКТ", "Иностранный язык", "Культурология", "Физкультура"];
   const taskTypes = ["Лабораторная работа", "Подготовка к лекции", "Чтение главы", "Решение практических задач", "Проектный отчет", "Сдача домашнего задания"];
 
-  console.log("Начало загрузки 100 задач...");
+  console.log("Начало загрузки 100 задач в Firestore...");
 
   for (let i = 1; i <= 100; i++) {
     const randomSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
@@ -625,12 +591,12 @@ function seed100Tasks() {
     });
   }
   
-  alert("Успешно отправлен запрос на создание 100 задач в Cloud Firestore!");
+  console.log("Успешно отправлен запрос на создание 100 задач!");
+  alert("100 задач успешно отправлены в Cloud Firestore!");
 }
 
-// Запуск по комбинации клавиш Ctrl + Shift + L (или Cmd + Shift + L на Mac)
-window.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.code === 'KeyL') {
-    seed100Tasks();
-  }
+// АВТОМАЧЕСКИЙ ЗАПУСК при загрузке страницы:
+window.addEventListener('DOMContentLoaded', () => {
+  // Вызываем генерацию через 2 секунды после загрузки сайта, чтобы Firestore успел подключиться
+  setTimeout(seed100Tasks, 2000);
 });
