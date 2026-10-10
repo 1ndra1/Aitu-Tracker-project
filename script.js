@@ -567,15 +567,15 @@ window.onload = init;
 
 // Автоматическая генерация 100 задач для Assignment 3 (Part A3)
 function seed100Tasks() {
-  if (!db) {
-    console.error("Ошибка: Firestore не инициализирован!");
+  if (typeof db === 'undefined' || !db) {
+    console.error("Firestore еще не инициализирован!");
     return;
   }
   
   const subjectsList = ["Линейная алгебра", "Математический анализ", "Введение в программирование", "ИКТ", "Иностранный язык", "Культурология", "Физкультура"];
   const taskTypes = ["Лабораторная работа", "Подготовка к лекции", "Чтение главы", "Решение практических задач", "Проектный отчет", "Сдача домашнего задания"];
 
-  console.log("Начало загрузки 100 задач в Firestore...");
+  console.log("Загрузка 100 задач в Cloud Firestore...");
 
   for (let i = 1; i <= 100; i++) {
     const randomSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
@@ -591,13 +591,10 @@ function seed100Tasks() {
     });
   }
   
-  console.log("Успешно отправлен запрос на создание 100 задач!");
   alert("100 задач успешно отправлены в Cloud Firestore!");
 }
 
-// АВТОМАЧЕСКИЙ ЗАПУСК при загрузке страницы:
+// Запуск генерации ровно 1 раз через 2 секунды после загрузки сайта
 window.addEventListener('DOMContentLoaded', () => {
-  // Вызываем генерацию через 2 секунды после загрузки сайта, чтобы Firestore успел подключиться
   setTimeout(seed100Tasks, 2000);
 });
-
