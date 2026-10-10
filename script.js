@@ -601,36 +601,3 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(seed100Tasks, 2000);
 });
 
-// Автоматическое заполнение 100 строк для Assignment 3 (Part A3)
-function seed100Tasks() {
-  if (!db) {
-    console.error("Firestore не инициализирован!");
-    return;
-  }
-  
-  const subjectsList = ["Линейная алгебра", "Математический анализ", "Введение в программирование", "ИКТ", "Иностранный язык", "Культурология", "Физкультура"];
-  const taskTypes = ["Лабораторная работа", "Подготовка к лекции", "Чтение главы", "Решение практических задач", "Проектный отчет", "Сдача домашнего задания"];
-
-  console.log("Загрузка 100 задач в Firestore...");
-
-  for (let i = 1; i <= 100; i++) {
-    const randomSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
-    const randomType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
-    
-    db.collection("tasks").add({
-      title: `${randomType} №${i}`,
-      subject: randomSubject,
-      time: "14:00",
-      date: "2026-10-10",
-      done: i % 3 === 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-  
-  alert("100 строк задач успешно отправлены в Cloud Firestore!");
-}
-
-// Запуск генерации через 2 секунды после загрузки сайта
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(seed100Tasks, 2000);
-});
