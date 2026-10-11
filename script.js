@@ -1,6 +1,4 @@
-// ---------- Firebase (облако) ----------
-// apiKey у Firebase - не секрет, он только указывает, какой проект использовать.
-// Данные защищают правила Firestore (файл firestore.rules), а не этот ключ.
+
 const firebaseConfig = {
   apiKey: "AIzaSyC7_YrJbvxm5J3wfnB4eJUnlHv3Lc0txIU",
   authDomain: "aitu-tracker.firebaseapp.com",
@@ -15,9 +13,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ---------- данные ----------
-// Гость (не вошёл): задачи лежат в localStorage.
-// Вошёл в аккаунт: задачи и расписание лежат в Firestore, отдельно для каждого пользователя.
+
 let tasks = JSON.parse(localStorage.getItem('aitu_tasks')) || [];
 let currentUser = null;
 let unsubscribeTasks = null;
@@ -58,7 +54,6 @@ const defaultSchedule = [
 
 let scheduleData = JSON.parse(localStorage.getItem('aitu_schedule')) || defaultSchedule;
 
-// ---------- старт ----------
 function init() {
   initTheme();
   updateAuthUI();
@@ -69,7 +64,6 @@ function init() {
   updateStats();
 }
 
-// сегодняшняя дата в формате ГГГГ-ММ-ДД (по местному времени)
 function getToday() {
   return dateToString(new Date());
 }
@@ -80,13 +74,12 @@ function dateToString(d) {
   return d.getFullYear() + '-' + month + '-' + day;
 }
 
-// ссылка на документ текущего пользователя: users/{uid}
+
 function userDoc() {
   return db.collection('users').doc(currentUser.uid);
 }
 
-// Для гостя сохраняем в localStorage. Для вошедшего пользователя данные уже ушли в Firestore.
-function saveTasks() {
+
   if (!currentUser) {
     localStorage.setItem('aitu_tasks', JSON.stringify(tasks));
   }
@@ -107,7 +100,6 @@ function showCloudError(error) {
   alert('Не удалось сохранить в облако: ' + error.message);
 }
 
-// ---------- синхронизация с Firestore ----------
 function startCloudSync() {
   // onSnapshot сам вызывается каждый раз, когда данные в облаке меняются
   unsubscribeTasks = userDoc().collection('tasks').onSnapshot(function (snapshot) {
@@ -120,7 +112,6 @@ function startCloudSync() {
     if (doc.exists) {
       scheduleData = doc.data().days;
     } else if (!doc.metadata.fromCache) {
-      // у нового пользователя расписания в облаке ещё нет - сохраняем стандартное
       scheduleData = JSON.parse(JSON.stringify(defaultSchedule));
       doc.ref.set({ days: scheduleData });
     }
@@ -134,7 +125,6 @@ function stopCloudSync() {
   unsubscribeTasks = null;
   unsubscribeSchedule = null;
 
-  // после выхода показываем гостевые данные
   tasks = JSON.parse(localStorage.getItem('aitu_tasks')) || [];
   scheduleData = JSON.parse(localStorage.getItem('aitu_schedule')) || defaultSchedule;
   renderTasks();
@@ -142,7 +132,7 @@ function stopCloudSync() {
   updateStats();
 }
 
-// Firebase сам сообщает, когда пользователь вошёл или вышел (и при обновлении страницы тоже)
+
 auth.onAuthStateChanged(function (user) {
   if (user) {
     currentUser = { uid: user.uid, name: user.displayName || user.email, email: user.email };
@@ -170,7 +160,7 @@ function switchTab(tabId, btn) {
   }
 }
 
-// ---------- дата ----------
+
 function setDate(dateStr) {
   if (!dateStr) return;
   currentDate = dateStr;
@@ -197,7 +187,7 @@ function updateDateLabel() {
   document.getElementById('dateLabel').innerText = text;
 }
 
-// ---------- задачи ----------
+
 function renderTasks() {
   let list = document.getElementById('taskList');
   list.innerHTML = '';
@@ -209,7 +199,7 @@ function renderTasks() {
     return;
   }
 
-  // сортируем по времени, задачи без времени идут в конец
+ 
   dailyTasks.sort((a, b) => (a.time || "24:00").localeCompare(b.time || "24:00"));
 
   dailyTasks.forEach(task => {
@@ -249,7 +239,6 @@ function addTask(e) {
   };
 
   if (currentUser) {
-    // сохраняем в облако, список обновится сам через onSnapshot
     userDoc().collection('tasks').doc(newTask.id).set(newTask).catch(showCloudError);
   } else {
     tasks.push(newTask);
@@ -284,7 +273,7 @@ function deleteTask(id) {
   }
 }
 
-// ---------- расписание ----------
+
 function renderSchedule() {
   let container = document.getElementById('scheduleContainer');
   let html = '';
@@ -341,7 +330,7 @@ function deleteScheduleClass(dayIndex, classIndex) {
   saveSchedule();
 }
 
-// ---------- статистика ----------
+
 function updateStats() {
   let total = tasks.length;
   let done = tasks.filter(t => t.done).length;
@@ -404,7 +393,7 @@ function renderChart() {
   });
 }
 
-// ---------- вход и регистрация ----------
+
 function updateAuthUI() {
   let box = document.getElementById('authContainer');
   if (currentUser) {
@@ -448,7 +437,7 @@ function toggleAuthMode() {
   openModal(authMode === 'login' ? 'register' : 'login');
 }
 
-// показать / спрятать пароль
+
 function togglePassword() {
   let input = document.getElementById('authPassword');
   input.type = (input.type === 'password') ? 'text' : 'password';
@@ -512,7 +501,7 @@ function handleAuth(e) {
     .then(function () { btn.disabled = false; });
 }
 
-// понятные сообщения вместо кодов ошибок Firebase
+
 function showAuthError(error) {
   let code = error.code;
   if (code === 'auth/email-already-in-use') {
@@ -536,8 +525,7 @@ function logout() {
   auth.signOut();
 }
 
-// ---------- тема ----------
-// какая иконка видна - решает CSS (в светлой теме солнце, в тёмной луна)
+
 function initTheme() {
   if (localStorage.getItem('aitu_theme') === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
@@ -548,15 +536,11 @@ function initTheme() {
     let next = (now === 'dark') ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('aitu_theme', next);
-
-    // график надо перерисовать, потому что у него свои цвета
     if (document.getElementById('tab-stats').classList.contains('active')) {
       renderChart();
     }
   });
 }
-
-// защита от вставки html в названия (чтобы не ломали страницу)
 function escapeHTML(str) {
   return String(str).replace(/[&<>'"]/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c];
@@ -565,36 +549,3 @@ function escapeHTML(str) {
 
 window.onload = init;
 
-// Автоматическая генерация 100 задач для Assignment 3 (Part A3)
-function seed100Tasks() {
-  if (typeof db === 'undefined' || !db) {
-    console.error("Firestore еще не инициализирован!");
-    return;
-  }
-  
-  const subjectsList = ["Линейная алгебра", "Математический анализ", "Введение в программирование", "ИКТ", "Иностранный язык", "Культурология", "Физкультура"];
-  const taskTypes = ["Лабораторная работа", "Подготовка к лекции", "Чтение главы", "Решение практических задач", "Проектный отчет", "Сдача домашнего задания"];
-
-  console.log("Загрузка 100 задач в Cloud Firestore...");
-
-  for (let i = 1; i <= 100; i++) {
-    const randomSubject = subjectsList[Math.floor(Math.random() * subjectsList.length)];
-    const randomType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
-    
-    db.collection("tasks").add({
-      title: `${randomType} №${i}`,
-      subject: randomSubject,
-      time: "14:00",
-      date: "2026-10-10",
-      done: i % 3 === 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-  
-  alert("100 задач успешно отправлены в Cloud Firestore!");
-}
-
-// Запуск генерации ровно 1 раз через 2 секунды после загрузки сайта
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(seed100Tasks, 2000);
-});
